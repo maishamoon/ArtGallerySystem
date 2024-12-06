@@ -1,0 +1,188 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+class Artist {
+    int id;
+    String name;
+    String bio;
+    String contactDetails;
+    public Artist(int id, String name, String bio, String contactDetails) {
+        this.id = id;
+        this.name = name;
+        this.bio = bio;
+        this.contactDetails = contactDetails;
+    }
+    public String toString() {
+        return "Artist ID: " + id + ", Name: " + name + ", Bio: " + bio + ", Contact: " + contactDetails;
+    }
+}
+class Artwork {
+    int id;
+    String title;
+    String description;
+    double price;
+    String status; 
+    public Artwork(int id, String title, String description, double price, String status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.status = status;
+    }
+    public String toString() {
+        return "Artwork ID: " + id + ", Title: " + title + ", Description: " + description +
+                ", Price: $" + price + ", Status: " + status;
+    }
+}
+class Exhibition {
+    int id;
+    String name;
+    String date;
+    String location;
+    List<Artwork> artworks;
+    public Exhibition(int id, String name, String date, String location) {
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.location = location;
+        this.artworks = new ArrayList<>();
+    }
+    public void addArtwork(Artwork artwork) {
+        artworks.add(artwork);
+}
+    public String toString() {
+        return "Exhibition ID: " + id + ", Name: " + name + ", Date: " + date +
+                ", Location: " + location + ", Artworks: " + artworks.size();
+    }
+}
+public class ArtGalleryManagementSystem {
+    static List<Artist> artists = new ArrayList<>();
+    static List<Artwork> artworks = new ArrayList<>();
+    static List<Exhibition> exhibitions = new ArrayList<>();
+    static int artistIdCounter = 1;
+    static int artworkIdCounter = 1;
+    static int exhibitionIdCounter = 1;
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\nArt Gallery Management System");
+            System.out.println("1. Add Artist");
+            System.out.println("2. Add Artwork");
+            System.out.println("3. Organize Exhibition");
+            System.out.println("4. View All Artists");
+            System.out.println("5. View All Artworks");
+            System.out.println("6. View All Exhibitions");
+            System.out.println("7. Exit");
+            System.out.print("Select an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); 
+            switch (choice) {
+                case 1:
+                    addArtist(scanner);
+                    break;
+                case 2:
+                    addArtwork(scanner);
+                    break;
+                case 3:
+                    organizeExhibition(scanner);
+                    break;
+                case 4:
+                    viewArtists();
+                    break;
+                case 5:
+                    viewArtworks();
+                    break;
+                case 6:
+                    viewExhibitions();
+                    break;
+                case 7:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+    public static void addArtist(Scanner scanner) {
+        System.out.print("Enter artist's name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter artist's bio: ");
+        String bio = scanner.nextLine();
+        System.out.print("Enter contact details: ");
+        String contactDetails = scanner.nextLine();
+
+        Artist artist = new Artist(artistIdCounter++, name, bio, contactDetails);
+        artists.add(artist);
+        System.out.println("Artist added: " + artist);
+    }
+    public static void addArtwork(Scanner scanner) {
+        System.out.print("Enter artwork title: ");
+        String title = scanner.nextLine();
+        System.out.print("Enter artwork description: ");
+        String description = scanner.nextLine();
+        System.out.print("Enter artwork price: ");
+        double price = scanner.nextDouble();
+        scanner.nextLine(); 
+        System.out.print("Enter artwork status (Available, Sold, In Exhibition): ");
+        String status = scanner.nextLine();
+        Artwork artwork = new Artwork(artworkIdCounter++, title, description, price, status);
+        artworks.add(artwork);
+        System.out.println("Artwork added: " + artwork);
+    }
+    public static void organizeExhibition(Scanner scanner) {
+        System.out.print("Enter exhibition name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter exhibition date: ");
+        String date = scanner.nextLine();
+        System.out.print("Enter exhibition location: ");
+        String location = scanner.nextLine();
+        Exhibition exhibition = new Exhibition(exhibitionIdCounter++, name, date, location);
+        System.out.println("Add artworks to the exhibition:");
+        for (Artwork artwork : artworks) {
+            System.out.println(artwork);
+        }
+        System.out.print("Enter artwork IDs to include (comma-separated): ");
+        String[] ids = scanner.nextLine().split(",");
+        for (String id : ids) {
+            Artwork artwork = artworks.stream()
+                    .filter(a -> a.id == Integer.parseInt(id.trim()))
+                    .findFirst().orElse(null);
+            if (artwork != null) {
+                exhibition.addArtwork(artwork);
+            }
+        }
+        exhibitions.add(exhibition);
+        System.out.println("Exhibition organized: " + exhibition);
+    }
+    public static void viewArtists() {
+        if (artists.isEmpty()) {
+            System.out.println("No artists available.");
+        } else {
+            System.out.println("All Artists:");
+            for (Artist artist : artists) {
+                System.out.println(artist);
+            }
+        }
+    }
+    public static void viewArtworks() {
+        if (artworks.isEmpty()) {
+            System.out.println("No artworks available.");
+        } else {
+            System.out.println("All Artworks:");
+            for (Artwork artwork : artworks) {
+                System.out.println(artwork);
+            }
+        }
+    }
+    public static void viewExhibitions() {
+        if (exhibitions.isEmpty()) {
+            System.out.println("No exhibitions available.");
+        } else {
+            System.out.println("All Exhibitions:");
+            for (Exhibition exhibition : exhibitions) {
+                System.out.println(exhibition);
+            }
+        }
+    }
+}
